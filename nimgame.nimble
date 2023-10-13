@@ -6,6 +6,7 @@ description   = "Test game for raylib with nim"
 license       = "MIT"
 srcDir        = "src"
 bin           = @["nimgame"]
+backend       = "cpp"
 
 
 # Dependencies

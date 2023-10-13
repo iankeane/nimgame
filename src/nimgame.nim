@@ -1,6 +1,46 @@
 import raylib
+import bullet
+
 
 proc main() =
+  var test = BtDefaultCollisionConfiguration()
+  # Bullet Initialization
+  let
+    collisionConfiguration = btNewDefaultCollisionConfiguration()
+    broadphase = btNewBroadphaseInterface()
+    dispatcher = btNewCollisionDispatcher(collisionConfiguration)
+    solver = btNewSequentialImpulseConstraintSolver()
+    dynamicsWorld = btNewDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration)
+
+  # dynamicsWorld.setGravity(BtVector3(0, -9.81, 0)) # Set gravity
+
+  let gravity = btVector3(0, -9.81, 0)
+  dynamicsWorld.setGravity(gravity)
+
+  # Create a collision shape for the mesh - use a box for simplicity
+  let collisionShape = initBtBoxShape(btVector3(0.5, 0.5, 0.5))  # Adjust size as needed
+
+  # Initial transformation of the mesh
+  let
+    rotation = initBtQuaternion(0, 0, 0, 1) # No rotation
+    origin = btVector3(0, 0, 0) # No translation
+    startTransform = initBtTransform(rotation, origin)
+
+  setIdentity(addr startTransform)
+  setOrigin(addr startTransform, btVector3(0, 5, 0))  # Start 5 units above the ground
+
+  let mass = cfloat(1.0)  # Adjust mass as needed
+  let localInertia = btVector3(0, 0, 0)
+
+  # calculateLocalInertia(addr collisionShape, mass, addr localInertia)
+
+  let motionState = initBtDefaultMotionState(startTransform)
+  let rigidBodyInfo = initBtRigidBodyConstructionInfo(mass, addr motionState, addr BtCollisionShape(collisionShape), localInertia)
+  let rigidBody = initBtRigidBody(rigidBodyInfo)
+
+
+  dynamicsWorld.addRigidBody(addr rigidBody)
+
   # Initialization
   const screenWidth = 800
   const screenHeight = 450
@@ -39,6 +79,14 @@ proc main() =
   while not windowShouldClose():
     # Update
     updateCamera(camera, FirstPerson)
+
+    const fixedTimeStep = 1.0 / 60.0  # For 60 updates per second.
+    const maxSubSteps = 10  # Maximum number of substeps to catch up with real time.
+
+    dynamicsWorld.stepSimulation(fixedTimeStep, maxSubSteps)
+    var trans: BtTransform
+    trans = getWorldTransform(rigidBody)
+    echo trans
 
     if animsCount > 0:
       # Play animation when spacebar is held down (or step one frame with N)
