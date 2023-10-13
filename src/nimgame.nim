@@ -27,7 +27,7 @@ proc main() =
   var model = loadModel(modelFileName)
 
   # Load animations
-  var animsCount = 0
+  var animsCount = 1
   var animFrameCounter = int32(0)
   var animId = 0
   var anims = loadModelAnimations(modelFileName)
@@ -43,7 +43,7 @@ proc main() =
     if animsCount > 0:
       # Play animation when spacebar is held down (or step one frame with N)
       if isKeyDown(Space) or isKeyPressed(N):
-        inc animFrameCounter
+        animFrameCounter += 1
 
         if animFrameCounter >= anims[animId].frameCount:
           animFrameCounter = 0
@@ -54,7 +54,7 @@ proc main() =
       # Select animation by pressing C
       if isKeyPressed(C):
         animFrameCounter = 0
-        inc animId
+        animId += 1
 
         if animId >= animsCount:
           animId = 0
@@ -78,17 +78,17 @@ proc main() =
     if drawMesh:
       drawModel(model, position, 1.0, WHITE)
 
-    # # Draw the animated skeleton
-    # if drawSkeleton:
-    #   for i in 0..<model.boneCount - 1:
-    #     if not animPlaying or animsCount == 0:
-    #       drawCube(model.bindPose[i].translation, 0.04, 0.04, 0.04, RED)
-    #       if model.bones[i].parent >= 0:
-    #         drawLine3D(model.bindPose[i].translation, model.bindPose[model.bones[i].parent].translation, RED)
-    #     else:
-    #       drawCube(anims[animId].framePoses[animFrameCounter][i].translation, 0.05, 0.05, 0.05, RED)
-    #       if anims[animId].bones[i].parent >= 0:
-    #         drawLine3D(anims[animId].framePoses[animFrameCounter][i].translation, anims[animId].framePoses[animFrameCounter][anims[animId].bones[i].parent].translation, RED)
+    # Draw the animated skeleton
+    if drawSkeleton:
+      for i in 0..<model.boneCount - 1:
+        if not animPlaying or animsCount == 0:
+          drawCube(model.bindPose[i].translation, 0.04, 0.04, 0.04, RED)
+          if model.bones[i].parent >= 0:
+            drawLine3D(model.bindPose[i].translation, model.bindPose[model.bones[i].parent].translation, RED)
+        else:
+          drawCube(anims[animId].framePoses[animFrameCounter, i].translation, 0.05, 0.05, 0.05, RED)
+          if anims[animId].bones[i].parent >= 0:
+            drawLine3D(anims[animId].framePoses[animFrameCounter, i].translation, anims[animId].framePoses[animFrameCounter, anims[animId].bones[i].parent].translation, RED)
 
     drawGrid(10, 1.0)
     endMode3D()
