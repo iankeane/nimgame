@@ -1,7 +1,10 @@
+import jolt
 import raylib
+
 
 proc main() =
   # Initialization
+  let world = init()
   const screenWidth = 800
   const screenHeight = 450
 

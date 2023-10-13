@@ -1,0 +1,6 @@
+* Configuring Jolt
+A version of bullet with the C API headers available is required for this project. Here's how to set that up:
+- =git clone https://github.com/amerkoleci/JoltPhysicsSharp.git=
+- =cmake .=
+- =make=
+- =sudo make install=
