@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.0"
+version       = "0.1.1"
 author        = "Ian Keane"
 description   = "Test game for raylib with nim"
 license       = "MIT"
@@ -11,4 +11,4 @@ bin           = @["nimgame"]
 # Dependencies
 
 requires "nim >= 2.0.0"
-requires "naylib"
+requires "naylib == 4.6.2"
